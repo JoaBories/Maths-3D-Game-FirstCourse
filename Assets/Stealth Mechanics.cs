@@ -12,10 +12,12 @@ public class StealthMechanics : MonoBehaviour
     [SerializeField] private GameObject detectionFeedback;
     [SerializeField] private GameObject backstabFeedback;
     private int numberOfEnemyDetecting = 0;
-    private bool canBackstab;
+    private float canBackstab;
 
     private void Update()
     {
+        numberOfEnemyDetecting = 0;
+        canBackstab = 0;
 
         foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("enemy"))
         {
@@ -24,7 +26,6 @@ public class StealthMechanics : MonoBehaviour
             if (dotProduct <= -1+enemyDetectionTreshold && dotProduct >= -1)
             {
                 numberOfEnemyDetecting++;
-                Debug.Log("yo");
             }
         }
 
@@ -39,24 +40,12 @@ public class StealthMechanics : MonoBehaviour
                     dotProduct = DotProduct(transform.forward, enemy.transform.forward);
                     if (dotProduct >= 1 - sameDirectionDetectionTreshold && dotProduct <= 1)
                     {
-                        canBackstab = true;
+                        canBackstab++;
                     }
-                    else
-                    {
-                        canBackstab = false;
-                    }
-                } 
-                else
-                {
-                    canBackstab = false;
                 }
-            } 
-            else
-            {
-                canBackstab = false;
             }
         }
-        
+
         detectionFeedback.SetActive(false);
         backstabFeedback.SetActive(false);
 
@@ -65,7 +54,7 @@ public class StealthMechanics : MonoBehaviour
             detectionFeedback.SetActive(true);
         }
 
-        if (canBackstab)
+        if (canBackstab > 0)
         {
             backstabFeedback.SetActive(true);
         }
